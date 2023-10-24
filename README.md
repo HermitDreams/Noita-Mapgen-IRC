@@ -19,6 +19,6 @@ Applying:
 TO-DO maybe:
 - Option to draw whole structures when a piece (e.g.: `mountain_right_stub`) is selected
 - Wider safe starting area
-- Declare which biomes are solid and which are navigable
+- ~~Declare which biomes are solid and which are navigable~~ Done! see `biometags.mrc`
 - Declare a zone where solid biomes have a much smaller chance of drawing
 - Draw branches of navigable biomes starting from spawn area
