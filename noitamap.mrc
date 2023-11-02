@@ -39,7 +39,7 @@
         set %noita.map.colour $mid(%noita.map.input,5,2) $+ $mid(%noita.map.input,3,2) $+ $mid(%noita.map.input,1,2)
         biometags $1 %noita.map.colour
       }
-      if (b isin $1) && (mountain isin %noita.map.tags) { buildmount $1 808020 }
+      if (b isin $1) && (mountain isin %noita.map.tags) { buildmount $1 %noita.map.colour }
       else { /drawdot -r @biome_map $base(%noita.map.colour,16,10) 0 35 13 }
       ; echo 12 -s BREAKPOINT: Drew %noita.map.tags to spawn. | unset %noita.map.* | halt
     }
@@ -47,7 +47,7 @@
       while (%noita.map.x <= 70) {
         pickbiome $1
         biometags $1 %noita.map.colour
-        if (e isin $1) { var %noita.map.diff 2 }
+        if (e isin $1) { var %noita.map.difficulty 2 }
         while (($right($read(%noita.map.tags),1) > %noita.map.difficulty) && (dif isin %noita.map.tags)) || ((paha isin %noita.map.tags) && (e isin $1)) {
           pickbiome $1
           biometags $1 %noita.map.colour
