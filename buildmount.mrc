@@ -1,4 +1,10 @@
 /buildmount {
+  /*
+  Type 1: Hollow
+  Type 2: Solid
+  Open 1: Left
+  Open 2: Right
+  */
   unset %noita.map.tags
   if (g isin $1) && (%noita.map.x = 0) && (%noita.map.y = 0) {
     var %noita.map.x 35
@@ -14,16 +20,22 @@
     echo 8 -s Mountain: Detected Left Piece
     set %noita.map.mount.xpos $calc(%noita.map.x +1)
     set %noita.map.mount.ypos $calc(%noita.map.y -1)
+    if ($2 = 808020) { var %noita.map.mount.type 1 | var %noita.map.mount.open 1 }
   }
   elseif (($2 isnum 604020-604023) || ($2 = 8080ff)) && (%noita.map.x isnum 2-67) && (%noita.map.y isnum 2-45) {
     echo 8 -s Mountain: Detected Center Piece
     set %noita.map.mount.xpos %noita.map.x
     set %noita.map.mount.ypos $calc(%noita.map.y -1)
+    if ($2 isnum 604020-604023) { var %noita.map.mount.type 1)
+      elseif ($2 = 8080ff) { var %noita.map.mount.type 2 }
+      else { echo 4 -s Mountain: $2 undefined Center Piece }
+    }
   }
   elseif ($2 isnum 808040-808043) && (%noita.map.x isnum 3-68) && (%noita.map.y isnum 2-45) {
     echo 8 -s Mountain: Detected Right Piece
     set %noita.map.mount.xpos $calc(%noita.map.x -1)
     set %noita.map.mount.ypos $calc(%noita.map.y -1)
+    if ($2 isnum 808041-808042) { var %noita.map.mount.type 1 | var %noita.map.mount.open 2 }
   }
   elseif ($2 = 808060) && (%noita.map.x isnum 0-65) && (%noita.map.y isnum 3-46) {
     echo 8 -s Mountain: Detected Left Stub
@@ -63,16 +75,28 @@
     }
     inc %noita.map.mount.count 1
   }
+  if (!%noita.map.mount.type) { var %noita.map.mount.type $rand(1,2) }
+  if (%noita.map.mount.type = 1) && (!%noita.map.mount.open) { var %noita.map.mount.open $rand(1,2) }
   dec %noita.map.mount.ypos 2
   dec %noita.map.mount.xpos 2
   drawdot -r @biome_map $base(8080c0,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
   inc %noita.map.mount.ypos 1
   dec %noita.map.mount.xpos 1
-  drawdot -r @biome_map $base(808020,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
+  if (%noita.map.mount.open = 1) { var %noita.map.colour 808020 }
+  else { var %noita.map.colour $rand(808000,808002) }
+  drawdot -r @biome_map $base(%noita.map.colour,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
   inc %noita.map.mount.xpos 1
-  drawdot -r @biome_map $base(604020,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
+  if (%noita.map.mount.type = 1) { var %noita.map.colour 604020 } ; Alternate versions of mountain_hall are missing the associated PNG files in _biome_impl
+  else { var %noita.map.colour 8080ff }
+  drawdot -r @biome_map $base(%noita.map.colour,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
   inc %noita.map.mount.xpos 1
-  drawdot -r @biome_map $base(808040,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
+  if (%noita.map.mount.open = 2) { var %noita.map.colour $rand(808041,808042) }
+  else {
+    var %noita.map.colour $rand(808040,808043)
+    if (%noita.map.colour = 808041) { dec %noita.map.colour 1 }
+    elseif (%noita.map.colour = 808042) { inc %noita.map.colour 1 }
+  }
+  drawdot -r @biome_map $base(%noita.map.colour,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
   inc %noita.map.mount.ypos 1
   dec %noita.map.mount.xpos 3
   drawdot -r @biome_map $base(808060,16,10) 0 %noita.map.mount.xpos %noita.map.mount.ypos
